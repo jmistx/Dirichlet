@@ -77,6 +77,8 @@ namespace HE.Gui
             MinorBoundY = -1;
             MajorBoundY = 1;
 
+            Function = "4.0";
+            Solution = "1.0 - p.x * p.x - p.y * p.y";
             IterationsMax = 1;
             EpsilonStopCondition = 0.001;
 
@@ -110,22 +112,24 @@ namespace HE.Gui
             var v = new double[nodesX, nodesY];
             Func<double, double> getX = i => MinorBoundX + i*h;
             Func<double, double> getY = i => MinorBoundY + i*k;
-            Func<double, double, double> solution = (x, y) => 1 - x*x - y*y;
+            
+            Func<double, double, double> solution = Parser.ParseTwoArgsMethod(Solution);
 
             for (int i = 0; i < nodesX; i++)
             {
-                v[i, 0] = boundCondition(getX(i));
-                v[i, IntervalsY] = boundCondition(getX(i));
+                v[i, 0] = solution(getX(i), getY(0));
+                v[i, IntervalsY] = solution(getX(i), getY(IntervalsY));
             }
             for (int j = 0; j < nodesY; j++)
             {
-                v[0, j] = boundCondition(getY(j));
-                v[IntervalsX, j] = boundCondition(getY(j));
+                v[0, j] = solution(getX(0), getY(j));
+                v[IntervalsX, j] = solution(getX(IntervalsX), getY(j));
             }
             double h2 = 1.0/(h*h);
             double k2 = 1.0/(k*k);
             double a = 2*(h2 + k2);
-            double f = 4;
+
+            Func<double, double, double> f = Parser.ParseTwoArgsMethod("4.0");
             double iterationEpsilonMax = 0.0;
 
             int currentIteration = 0;
@@ -138,7 +142,7 @@ namespace HE.Gui
                     for (int i = 1; i < IntervalsX; i++)
                     {
                         double previousResult = v[i, j];
-                        double currentResult = h2*(v[i - 1, j] + v[i + 1, j]) + k2*(v[i, j - 1] + v[i, j + 1]) + f;
+                        double currentResult = h2*(v[i - 1, j] + v[i + 1, j]) + k2*(v[i, j - 1] + v[i, j + 1]) + f(getX(i), getX(j));
                         currentResult = currentResult/a;
                         v[i, j] = currentResult;
                         double iterationEpsilon = Math.Abs(previousResult - currentResult);
@@ -183,6 +187,8 @@ namespace HE.Gui
             RaisePropertyChanged(null);
         }
 
+        public string Solution { get; set; }
+
         private DataView Populate(double[,] answer)
         {
             return BindingHelper.GetBindable2DArray(answer);
@@ -204,7 +210,7 @@ namespace HE.Gui
     public class TwoArgs
     {
         public double x { get; set; }
-        public double t { get; set; }
+        public double y { get; set; }
     }
 
     public class TimeArg
@@ -271,10 +277,10 @@ namespace HE.Gui
                 TypeRegistry = typeRegistry
             };
 
-            Func<double, double, double> f = (x, t) =>
+            Func<double, double, double> f = (x, y) =>
             {
                 param.x = x;
-                param.t = t;
+                param.y = y;
                 return expression.Eval();
             };
             return f;

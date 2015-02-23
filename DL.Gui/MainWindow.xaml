@@ -11,7 +11,7 @@
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="386"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Margin="0,0,10,0" RenderTransformOrigin="0.5,0.5">
@@ -37,11 +37,12 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="32*" />
-                        <ColumnDefinition Width="159*"/>
-                        <ColumnDefinition Width="59*" />
+                        <ColumnDefinition Width="24*" />
+                        <ColumnDefinition Width="71*"/>
+                        <ColumnDefinition Width="93*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">a</Label>
                     <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding MinorBoundX}"/>
@@ -53,18 +54,20 @@
                     <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding MajorBoundY}"/>
                     <Label Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">Начальные условия:</Label>
                     <TextBox Grid.Column="2" Grid.Row="4" Text="нулевые" />
-                    <Label Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2">f(x,t):</Label>
-                    <TextBox Grid.Column="2" Grid.Row="5" Text="{Binding Function}" />
-                    <Label Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">Nmax: Число итераций</Label>
-                    <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding IterationsMax}"/>
-                    <Label Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2">Eps1: ограничение на остановку</Label>
-                    <TextBox Grid.Column="2" Grid.Row="7" Text="{Binding EpsilonStopCondition}"/>
-                    <Label Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2">n: Разбиений по X</Label>
-                    <TextBox Grid.Column="2" Grid.Row="8"  Text="{Binding IntervalsX}"/>
-                    <Label Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2">m: Разбиений по Y</Label>
-                    <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding IntervalsY}"/>
-                    <Label Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="2">Показывать таблицу</Label>
-                    <CheckBox Grid.Column="2" Grid.Row="10" IsChecked="{Binding ShowResultGrid}"/>
+                    <Label Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2">Точное решение:</Label>
+                    <TextBox Grid.Column="2" Grid.Row="5" Text="{Binding Solution}" />
+                    <Label Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2">f(x,t):</Label>
+                    <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding Function}" />
+                    <Label Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2">Nmax: Число итераций</Label>
+                    <TextBox Grid.Column="2" Grid.Row="7" Text="{Binding IterationsMax}"/>
+                    <Label Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2">Eps1: ограничение на остановку</Label>
+                    <TextBox Grid.Column="2" Grid.Row="8" Text="{Binding EpsilonStopCondition}"/>
+                    <Label Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2">n: Разбиений по X</Label>
+                    <TextBox Grid.Column="2" Grid.Row="9"  Text="{Binding IntervalsX}"/>
+                    <Label Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="2">m: Разбиений по Y</Label>
+                    <TextBox Grid.Column="2" Grid.Row="10" Text="{Binding IntervalsY}"/>
+                    <Label Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="2">Показывать таблицу</Label>
+                    <CheckBox Grid.Column="2" Grid.Row="11" IsChecked="{Binding ShowResultGrid}"/>
                 </Grid>
                 <Separator></Separator>
                 <Button Command="{Binding CalculateCommand}">Рассчитать</Button>
