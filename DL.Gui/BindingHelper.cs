@@ -48,5 +48,31 @@ namespace HE.Gui
             }
             return dataView;
         }
+
+        public static DataView GetBindableDoubleArray(double[,] array)
+        {
+            var dataTable = new DataTable();
+            for (int i = 0; i < array.GetLength(1); i++)
+            {
+                dataTable.Columns.Add(i.ToString(), typeof(Ref<string>));
+            }
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                var dataRow = dataTable.NewRow();
+                dataTable.Rows.Add(dataRow);
+            }
+            var dataView = new DataView(dataTable);
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    int a = i;
+                    int b = j;
+                    var refT = new Ref<string>(() => array[a, b].ToString("0.000"), z => { });
+                    dataView[i][j] = refT;
+                }
+            }
+            return dataView;
+        }
     }
 }

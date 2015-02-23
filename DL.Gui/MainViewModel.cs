@@ -20,7 +20,6 @@ namespace HE.Gui
             IntervalsX = 10;
             MinorBoundY = 0.0;
             MajorBoundY = 0.0;
-            InitialCondition = "0.0";
             Function = "0.0";
         }
 
@@ -37,7 +36,6 @@ namespace HE.Gui
         public int IntervalsY { get; set; }
         public double MinorBoundY { get; set; }
         public double MajorBoundY { get; set; }
-        public string InitialCondition { get; set; }
 
         public DataView ResultGrid { get; set; }
 
@@ -52,19 +50,20 @@ namespace HE.Gui
 
         private void PopulateMainTask()
         {
-            MinorBoundX = 0;
-            MajorBoundX = 1;
+            MinorBoundX = 1;
+            MajorBoundX = 2;
+            
+            MinorBoundY = 2;
+            MajorBoundY = 3;
+
+            IntervalsX = 4;
+            IntervalsY = 4;
 
             IterationsMax = 1;
+            EpsilonStopCondition = 0.0001;
 
-            IntervalsX = 10;
-            IntervalsY = 100;
-
-            MinorBoundY = -1;
-            MajorBoundY = 1;
-
-            InitialCondition = "0.0";
-            Function = "m.Sin(m.PI * p.x)";
+            Function = "m.Sin(m.PI*p.x*p.y)*m.PI*m.PI*(p.x*p.x + p.y*p.y)";
+            Solution = "m.Sin(m.PI*p.x*p.y)";
 
             RaisePropertyChanged(null);
         }
@@ -80,14 +79,10 @@ namespace HE.Gui
             Function = "4.0";
             Solution = "1.0 - p.x * p.x - p.y * p.y";
             IterationsMax = 1;
-            EpsilonStopCondition = 0.001;
+            EpsilonStopCondition = 0.0001;
 
             IntervalsX = 4;
             IntervalsY = 4;
-
-
-            InitialCondition = "m.Sin(m.PI * p.x)";
-            Function = "0.0";
 
             RaisePropertyChanged(null);
         }
@@ -104,9 +99,8 @@ namespace HE.Gui
 //                Function = Parser.ParseTwoArgsMethod(Function)
 //            };
 //            var answer = solver.Solve(IterationsMax, IntervalsX, IntervalsY);
-            Func<double, double> boundCondition = (x => -x*x);
             double h = (MajorBoundX - MinorBoundX)/IntervalsX;
-            double k = (MajorBoundY - MinorBoundX)/IntervalsY;
+            double k = (MajorBoundY - MinorBoundY)/IntervalsY;
             int nodesX = IntervalsX + 1;
             int nodesY = IntervalsY + 1;
             var v = new double[nodesX, nodesY];
@@ -114,6 +108,7 @@ namespace HE.Gui
             Func<double, double> getY = i => MinorBoundY + i*k;
             
             Func<double, double, double> solution = Parser.ParseTwoArgsMethod(Solution);
+            //Func<double, double, double> solution = (x, y) => Math.Sin(Math.PI*x*y);
 
             for (int i = 0; i < nodesX; i++)
             {
@@ -129,7 +124,7 @@ namespace HE.Gui
             double k2 = 1.0/(k*k);
             double a = 2*(h2 + k2);
 
-            Func<double, double, double> f = Parser.ParseTwoArgsMethod("4.0");
+            Func<double, double, double> f = Parser.ParseTwoArgsMethod(Function);
             double iterationEpsilonMax = 0.0;
 
             int currentIteration = 0;
@@ -142,7 +137,8 @@ namespace HE.Gui
                     for (int i = 1; i < IntervalsX; i++)
                     {
                         double previousResult = v[i, j];
-                        double currentResult = h2*(v[i - 1, j] + v[i + 1, j]) + k2*(v[i, j - 1] + v[i, j + 1]) + f(getX(i), getX(j));
+                        double fVal = f(getX(i), getY(j));
+                        double currentResult = h2*(v[i - 1, j] + v[i + 1, j]) + k2*(v[i, j - 1] + v[i, j + 1]) + fVal;
                         currentResult = currentResult/a;
                         v[i, j] = currentResult;
                         double iterationEpsilon = Math.Abs(previousResult - currentResult);
@@ -191,7 +187,19 @@ namespace HE.Gui
 
         private DataView Populate(double[,] answer)
         {
-            return BindingHelper.GetBindable2DArray(answer);
+            int lengthX = answer.GetLength(0);
+            int lengthY = answer.GetLength(1);
+
+            var reverted = new double[lengthY, lengthX];
+
+            for (int i = 0; i < lengthX; i++)
+            {
+                for (int j = 0; j < lengthY; j++)
+                {
+                    reverted[j, i] = answer[i, lengthY - 1 - j];
+                }
+            }
+            return BindingHelper.GetBindableDoubleArray(reverted);
         }
 
         private DataView Populate(EquationSolveAnswer answer)
