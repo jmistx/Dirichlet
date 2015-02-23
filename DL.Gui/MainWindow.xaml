@@ -58,9 +58,17 @@
                 <Button Command="{Binding PopulateTestTaskCommand}">Тестовая задача</Button>
                 <Button Command="{Binding PopulateMainTaskCommand}">Основная задача</Button>
             </StackPanel>
-            <StackPanel Grid.Column="1">
-                <DataGrid IsReadOnly="True" ItemsSource="{Binding ResultGrid}"></DataGrid>
-            </StackPanel>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="250"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Column="0" Grid.Row="0">
+                    <DataGrid IsReadOnly="True" ItemsSource="{Binding ResultGrid}"></DataGrid>
+                </ScrollViewer>
+                <TabPanel Grid.Column="0" Grid.Row="1"/>
+            </Grid>
+            
         </Grid>
     </Grid>
 </Window>
