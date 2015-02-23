@@ -41,6 +41,15 @@ namespace HE.Gui
 
         public DataView ResultGrid { get; set; }
 
+        public double IterationMethodAccuracy { get; set; }
+        public double SoultionAccuracy { get; set; }
+
+        public int IterationsPassed { get; set; }
+
+        public double EpsilonStopCondition { get; set; }
+
+        public bool ShowResultGrid { get; set; }
+
         private void PopulateMainTask()
         {
             MinorBoundX = 0;
@@ -69,6 +78,7 @@ namespace HE.Gui
             MajorBoundY = 1;
 
             IterationsMax = 1;
+            EpsilonStopCondition = 0.001;
 
             IntervalsX = 4;
             IntervalsY = 4;
@@ -100,6 +110,8 @@ namespace HE.Gui
             var v = new double[nodesX, nodesY];
             Func<double, double> getX = i => MinorBoundX + i*h;
             Func<double, double> getY = i => MinorBoundY + i*k;
+            Func<double, double, double> solution = (x, y) => 1 - x*x - y*y;
+
             for (int i = 0; i < nodesX; i++)
             {
                 v[i, 0] = boundCondition(getX(i));
@@ -114,7 +126,6 @@ namespace HE.Gui
             double k2 = 1.0/(k*k);
             double a = 2*(h2 + k2);
             double f = 4;
-            double stopEpsilon = 0.001;
             double iterationEpsilonMax = 0.0;
 
             int currentIteration = 0;
@@ -138,7 +149,7 @@ namespace HE.Gui
                     }
                 }
                 currentIteration++;
-                if (stopEpsilon > iterationEpsilonMax)
+                if (EpsilonStopCondition > iterationEpsilonMax)
                 {
                     break;
                 }
@@ -148,8 +159,27 @@ namespace HE.Gui
                 }
             }
 
-
-            ResultGrid = Populate(v);
+            IterationsPassed = currentIteration;
+            IterationMethodAccuracy = iterationEpsilonMax;
+            double maxSolutionDifference = 0;
+            for (int j = 0; j < nodesY; j++)
+            {
+                for (int i = 0; i < nodesX; i++)
+                {
+                    double currentDifference = Math.Abs(v[i, j] - solution(getX(i), getY(j)));
+                    maxSolutionDifference = Math.Max(maxSolutionDifference, currentDifference);
+                }
+            }
+            SoultionAccuracy = maxSolutionDifference;
+            if (ShowResultGrid)
+            {
+                ResultGrid = Populate(v);
+            }
+            else
+            {
+                ResultGrid = null;
+            }
+            
             RaisePropertyChanged(null);
         }
 
