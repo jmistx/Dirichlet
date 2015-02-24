@@ -1,1 +1,8 @@
  
+DL.Test/obj/
+packages/
+DL.Gui/obj/Debug/
+DL.Test/bin/
+DL.Gui/bin/
+DL.Logic/obj/
+DL.Logic/bin/
