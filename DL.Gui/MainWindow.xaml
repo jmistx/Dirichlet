@@ -72,8 +72,8 @@
                 <Separator></Separator>
                 <Button Command="{Binding CalculateCommand}">Рассчитать</Button>
                 <Separator></Separator>
-                <Button Command="{Binding PopulateTestTaskCommand}">Тестовая задача</Button>
-                <Button Command="{Binding PopulateMainTaskCommand}">Основная задача</Button>
+                <Button Command="{Binding PopulateTestTaskCommand}">Тестовая задача 2</Button>
+                <Button Command="{Binding PopulateMainTaskCommand}">Тестовая задача 1</Button>
             </StackPanel>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
